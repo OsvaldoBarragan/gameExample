@@ -12,6 +12,18 @@ function scaleCanvasSize(num) {
     canvas.style.transform = `translate(-50%, -50%) scale(${num})`;
 }
 
+// Buttons on the page
+const upButton = document.getElementById("dPadTop");
+const leftButton = document.getElementById("dPadLeft");
+const rightButton = document.getElementById("dPadRight");
+const downButton = document.getElementById("dPadBottom");
+
+const iButton = document.getElementById("actionButtonsTop");
+const jButton = document.getElementById("actionButtonsLeft");
+const lButton = document.getElementById("actionButtonsRight");
+const kButton = document.getElementById("actionButtonsBottom");
+//
+
 export const keyTracker = {
     q: {
         pressed: false
@@ -182,28 +194,27 @@ function gameKeys() {
                     if (gameCurrentState === STATES.Gameplay) {
                         keyTracker.i.pressed = false;
                         console.log("working");
-                        scaleCanvasSize(0.5);
+                        scaleCanvasSize(1);
                         break; 
                     }
                     break;
                 case "KeyK":
                     if (gameCurrentState === STATES.Gameplay) {
                         keyTracker.k.pressed = false;
-                        scaleCanvasSize(1);
                         break;
                     }
                     break;
                 case "KeyJ":
                     if (gameCurrentState === STATES.Gameplay) {
                         keyTracker.j.pressed = false;
-                        scaleCanvasSize(1.5);
+                        scaleCanvasSize(0.5);
                         break;
                     }
                     break;
                 case "KeyL":
                     if (gameCurrentState === STATES.Gameplay) {
                         keyTracker.l.pressed = false;
-                        scaleCanvasSize(2);
+                        scaleCanvasSize(0.75);
                         break;
                     }
                     break;
@@ -218,6 +229,152 @@ function gameKeys() {
                         break;
                     }
             }
+        }
+    });
+
+    // D-Pad Button Trackers (for those on mobile, it tracks their touches)
+    upButton.addEventListener("touchstart", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.w.pressed = true;
+        }
+    });
+
+    upButton.addEventListener("touchend", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.w.pressed = false;
+        }
+    });
+
+    downButton.addEventListener("touchstart", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.s.pressed = true;
+        }
+    });
+
+    downButton.addEventListener("touchend", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.s.pressed = false;
+        }
+    });
+
+    leftButton.addEventListener("touchstart", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.a.pressed = true;
+        }
+    });
+
+    leftButton.addEventListener("touchend", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.a.pressed = false;
+        }
+    });
+
+    rightButton.addEventListener("touchstart", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.d.pressed = true;
+        }
+    });
+
+    rightButton.addEventListener("touchend", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.d.pressed = false;
+        }
+    });
+
+    // Action Button Trackers (for those on mobile, it tracks their touches)
+    iButton.addEventListener("touchstart", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.i.pressed = true;
+        }
+    });
+
+    iButton.addEventListener("touchend", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.i.pressed = false;
+        }
+    });
+
+    kButton.addEventListener("touchstart", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.k.pressed = true;
+        }
+    });
+
+    kButton.addEventListener("touchend", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.k.pressed = false;
+        }
+    });
+
+    jButton.addEventListener("touchstart", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.j.pressed = true;
+        }
+    });
+
+    jButton.addEventListener("touchend", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.j.pressed = false;
+        }
+    });
+
+    lButton.addEventListener("touchstart", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.l.pressed = true;
+        }
+    });
+
+    lButton.addEventListener("touchend", (event) => {
+        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.l.pressed = false;
         }
     });
 }

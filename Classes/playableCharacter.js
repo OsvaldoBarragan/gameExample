@@ -39,7 +39,7 @@ export class PlayableCharacter {
     update() {
         this.draw();
         // console.log("Stamina:", this.stamina);
-        console.log(`Health: ${Math.trunc(this.health)}, Stamina: ${Math.trunc(this.stamina)}`);
+        // console.log(`Health: ${Math.trunc(this.health)}, Stamina: ${Math.trunc(this.stamina)}`);
 
         function characterCanvasBoundaries(char) {
             if (char.pos.y <= 0 && keyTracker.w.pressed) {

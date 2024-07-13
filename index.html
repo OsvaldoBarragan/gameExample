@@ -19,36 +19,154 @@
                 background-size: cover;
                 width: 100%;
                 height: 100%;
-                display: none;
-            }
-            #warningToUser {
-                position: absolute;
-                background-color: black;
-                width: 100%;
-                height: 100%;
-                text-align: center;
-                align-content: center;
-                display: none;
-                color: white;
-                font-size: larger;
+                display: block;
             }
             #game {
                 position: absolute;
                 left: 50%;
                 top: 50%;
-                transform: translate(-50%, -50%) scale(1);
+                transform: translate(-50%, -50%) scale(0.8);
                 image-rendering: pixelated;
                 background-color: black;
-                display: none;
+                display: block;
                 /* object-fit: contain; */
+            }
+            #dPad {
+                position: absolute;
+                left: 5%;
+                top: 50%;
+                width: 30%;
+                height: 35%;
+                display: flex;
+                flex-direction: row;
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            #actionButtons {
+                position: absolute;
+                right: 5%;
+                top: 50%;
+                width: 30%;
+                height: 35%;
+                display: flex;
+                flex-direction: row;
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            #actionButtonsTop, #actionButtonsLeft, #actionButtonsRight, #actionButtonsBottom {
+                border-radius: 40%;
+            }
+            #dPadTop, #dPadLeft, #dPadRight, #dPadBottom, #actionButtonsTop, #actionButtonsLeft, #actionButtonsRight, #actionButtonsBottom {
+                position: absolute;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                background-color: black;
+                color: #991b1b;
+            }
+            #dPadTop, #actionButtonsTop {
+                height: 33.333333%;
+                width: 50%;
+                left: 25%;
+                border-top-width: 2px;
+                border-left-width: 2px;
+                border-right-width: 2px;
+                border-color: #991b1b;
+                border-radius: 0.375rem;
+            }
+            #dPadLeft, #actionButtonsLeft {
+                height: 33.333333%;
+                width: 50%;
+                top: 33.333333%;
+                border-top-width: 2px;
+                border-left-width: 2px;
+                border-right-width: 2px;
+                border-bottom-width: 2px;
+                border-color: #991b1b;
+                border-radius: 0.375rem;
+            }
+            #dPadRight, #actionButtonsRight {
+                height: 33.333333%;
+                width: 50%;
+                left: 50%;
+                top: 33.333333%;
+                border-top-width: 2px;
+                border-left-width: 2px;
+                border-right-width: 2px;
+                border-bottom-width: 2px;
+                border-color: #991b1b;
+                border-radius: 0.375rem;
+            }
+            #dPadBottom, #actionButtonsBottom {
+                height: 33.333333%;
+                width: 50%;
+                left: 25%;
+                top: 66.666667%;
+                border-left-width: 2px;
+                border-right-width: 2px;
+                border-bottom-width: 2px;
+                border-color: #991b1b;
+                border-radius: 0.375rem;
+            }
+            #dPadTop:hover, #actionButtonsTop:hover {
+                align-items: flex-start;
+                box-shadow: 0px -2px 10px floralwhite;
+                background-color: #363636;
+            }
+            #dPadLeft:hover, #actionButtonsLeft:hover {
+                justify-content: flex-start;
+                box-shadow: -2px 0px 10px floralwhite;
+                background-color: #363636;
+            }
+            #dPadRight:hover, #actionButtonsRight:hover {
+                justify-content: flex-end;
+                box-shadow: 2px 0px 10px floralwhite;
+                background-color: #363636;
+            }
+            #dPadBottom:hover, #actionButtonsBottom:hover {
+                align-items: flex-end;
+                box-shadow: 0px 2px 10px floralwhite;
+                background-color: #363636;
+            }
+            #dPadTopText, #dPadLeftText, #dPadRightText, #dPadBottomText {
+                position: relative;
+                user-select: none;
+                font-size: 1rem;
+                line-height: 1.5rem;
             }
         </style>
     </head>
     <body>
         <div id = "gameBackground"></div>
-        <div id = "warningToUser">
-            In order to receive the best experience, please use your device in landscape mode.
-        </div>
         <canvas id = "game" width = "480" height = "270"></canvas>
+        <div id = "dPad">
+            <button id = "dPadTop">
+                <h1 id = "dPadTopText">Up</h1>
+            </button>
+            <button id = "dPadLeft">
+                <h1 id = "dPadLeftText">Left</h1>
+            </button>
+            <button id = "dPadRight">
+                <h1 id = "dPadRightText">Right</h1>
+            </button>
+            <button id = "dPadBottom">
+                <h1 id = "dPadBottomText">Down</h1>
+            </button>
+        </div>
+        <div id = "actionButtons">
+            <button id = "actionButtonsTop">
+                <h1 id = "actionButtonsTopText">I</h1>
+            </button>
+            <button id = "actionButtonsLeft">
+                <h1 id = "actionButtonsLeftText">J</h1>
+            </button>
+            <button id = "actionButtonsRight">
+                <h1 id = "actionButtonsRightText">L</h1>
+            </button>
+            <button id = "actionButtonsBottom">
+                <h1 id = "actionButtonsBottomText">K</h1>
+            </button>
+        </div>
     </body>
 </html>
