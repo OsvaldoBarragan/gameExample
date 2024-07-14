@@ -1,12 +1,14 @@
 "use strict";
 
-import { allowKeys, STATES, gameCurrentState } from "./../index.js";
+import { allowKeys, STATES } from "./../index.js";
 import * as one from "./../Worlds/world1.js";
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 export let world = one;
+
+window.gameplayKeysAllowed = false;
 
 function scaleCanvasSize(num) {
     canvas.style.transform = `translate(-50%, -50%) scale(${num})`;
@@ -63,9 +65,9 @@ export const keyTracker = {
     }
 };
 
-function gameKeys() {
+export function gameplayKeys() {
     window.addEventListener("keydown", (event) => {
-        if (allowKeys) {
+        if (allowKeys && gameplayKeysAllowed) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -149,7 +151,7 @@ function gameKeys() {
     });
     
     window.addEventListener("keyup", (event) => {
-        if (allowKeys) {
+        if (allowKeys && gameplayKeysAllowed) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -193,8 +195,6 @@ function gameKeys() {
                 case "KeyI":
                     if (gameCurrentState === STATES.Gameplay) {
                         keyTracker.i.pressed = false;
-                        console.log("working");
-                        scaleCanvasSize(1);
                         break; 
                     }
                     break;
@@ -207,20 +207,19 @@ function gameKeys() {
                 case "KeyJ":
                     if (gameCurrentState === STATES.Gameplay) {
                         keyTracker.j.pressed = false;
-                        scaleCanvasSize(0.5);
                         break;
                     }
                     break;
                 case "KeyL":
                     if (gameCurrentState === STATES.Gameplay) {
                         keyTracker.l.pressed = false;
-                        scaleCanvasSize(0.75);
                         break;
                     }
                     break;
                 case "KeyZ":
                     if (gameCurrentState === STATES.Gameplay) {
                         keyTracker.z.pressed = false;
+                        gameCurrentState = STATES.PauseMenu;
                         break;
                     }
                 case "KeyX":
@@ -234,16 +233,17 @@ function gameKeys() {
 
     // D-Pad Button Trackers (for those on mobile, it tracks their touches)
     upButton.addEventListener("touchstart", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
             keyTracker.w.pressed = true;
+            world.playableCharacter.canMove = true;
         }
     });
 
     upButton.addEventListener("touchend", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -252,16 +252,17 @@ function gameKeys() {
     });
 
     downButton.addEventListener("touchstart", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
             keyTracker.s.pressed = true;
+            world.playableCharacter.canMove = true;
         }
     });
 
     downButton.addEventListener("touchend", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -270,16 +271,17 @@ function gameKeys() {
     });
 
     leftButton.addEventListener("touchstart", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
             keyTracker.a.pressed = true;
+            world.playableCharacter.canMove = true;
         }
     });
 
     leftButton.addEventListener("touchend", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -288,16 +290,17 @@ function gameKeys() {
     });
 
     rightButton.addEventListener("touchstart", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
             keyTracker.d.pressed = true;
+            world.playableCharacter.canMove = true;
         }
     });
 
     rightButton.addEventListener("touchend", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -307,7 +310,7 @@ function gameKeys() {
 
     // Action Button Trackers (for those on mobile, it tracks their touches)
     iButton.addEventListener("touchstart", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -316,7 +319,7 @@ function gameKeys() {
     });
 
     iButton.addEventListener("touchend", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -325,7 +328,7 @@ function gameKeys() {
     });
 
     kButton.addEventListener("touchstart", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -334,7 +337,7 @@ function gameKeys() {
     });
 
     kButton.addEventListener("touchend", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -343,7 +346,7 @@ function gameKeys() {
     });
 
     jButton.addEventListener("touchstart", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -352,7 +355,7 @@ function gameKeys() {
     });
 
     jButton.addEventListener("touchend", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -361,7 +364,7 @@ function gameKeys() {
     });
 
     lButton.addEventListener("touchstart", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -370,7 +373,7 @@ function gameKeys() {
     });
 
     lButton.addEventListener("touchend", (event) => {
-        if (allowKeys && gameCurrentState === STATES.Gameplay) {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
             if (event.defaultPrevented) {
                 return;
             }
@@ -391,10 +394,13 @@ function displayHealthAndStamina() {
 }
 
 export function runGameplayScreen() {
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    loadClasses();
-    displayHealthAndStamina();
+    if (window.gameCurrentState === STATES.Gameplay) {
+        gameplayKeysAllowed = true;
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        loadClasses();
+        displayHealthAndStamina();
+    }
 }
 
-gameKeys();
+gameplayKeys();

@@ -1,6 +1,7 @@
 "use strict";
 
-import { runGameplayScreen } from "./Screens/gameplayScreen.js";
+import { runGameplayScreen, gameplayKeys } from "./Screens/gameplayScreen.js";
+import { runPauseMenuScreen, pauseMenuKeys } from "./Screens/pauseMenuScreen.js";
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
@@ -18,7 +19,7 @@ export const STATES = {
     TitleScreen: 3
 };
 
-export let gameCurrentState = STATES.Gameplay;
+window.gameCurrentState = STATES.PauseMenu;
 
 function resetCanvas() {
     ctx.fillStyle = "black";
@@ -41,6 +42,8 @@ screen.orientation.addEventListener("change", () => {
 //
 
 export function animate() {
+    pauseMenuKeysAllowed = false;
+    gameplayKeysAllowed = false;
     switch(gameCurrentState) {
         case STATES.MainMenu:
             allowKeys = true;
