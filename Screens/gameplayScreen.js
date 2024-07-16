@@ -388,16 +388,23 @@ function loadClasses() {
 
 function displayHealthAndStamina() {
     ctx.fillStyle = "black";
-    ctx.font = "bold 30px serif";
-    ctx.fillText(`Health: ${Math.trunc(world.playableCharacter.health)}`, 32, 32);
-    ctx.fillText(`Stamina: ${Math.trunc(world.playableCharacter.stamina)}`, canvas.width - 32 - (ctx.measureText(`Stamina: ${Math.trunc(world.playableCharacter.stamina)}`).width), 32);
+    ctx.fillRect(4, 4, 108, 44);
+    ctx.fillStyle = "#16E972";
+    ctx.fillRect(8, 8, Math.trunc(world.playableCharacter.health), 16 );
+    ctx.fillStyle = "#1624E9";
+    ctx.fillRect(8, 28, Math.trunc(world.playableCharacter.stamina), 16 );
+    ctx.font = "bold 16px serif";
+    ctx.fillStyle = "#E9168D";
+    ctx.fillText(Math.trunc(world.playableCharacter.health), (112 / 2) - (ctx.measureText(Math.trunc(world.playableCharacter.health)).width / 2), 22);
+    ctx.fillStyle = "#E9DB16";
+    ctx.fillText(Math.trunc(world.playableCharacter.stamina), (112 / 2) - (ctx.measureText(Math.trunc(world.playableCharacter.stamina)).width / 2), 42);
 }
 
 export function runGameplayScreen() {
     if (window.gameCurrentState === STATES.Gameplay) {
         gameplayKeysAllowed = true;
         ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect((canvas.width / 2) - (480 / 2), (canvas.height / 2) - (270 / 2), 480, 270);
         loadClasses();
         displayHealthAndStamina();
     }

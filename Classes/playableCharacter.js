@@ -19,8 +19,8 @@ export class PlayableCharacter {
         this.healthGain = 0.05;
         
         this.pos = {
-            x: 0,
-            y: 0
+            x: 300,
+            y: 128
         };
 
         this.hasLoaded = false;
@@ -66,7 +66,7 @@ export class PlayableCharacter {
         function walkingMovement(char) {
             if (keyTracker.w.pressed) {
 
-                if (keyTracker.k.pressed && char.stamina >= 30) {
+                if (keyTracker.k.pressed && char.stamina >= 0) {
                     char.pos.y -= char.runningSpeed;
                     char.stamina -= char.staminaLoss;
                     return;
@@ -76,7 +76,7 @@ export class PlayableCharacter {
             }
             else if (keyTracker.s.pressed) {
 
-                if (keyTracker.k.pressed && char.stamina >= 30) {
+                if (keyTracker.k.pressed && char.stamina >= 0) {
                     char.pos.y += char.runningSpeed;
                     char.stamina -= char.staminaLoss;
                     return;
@@ -86,7 +86,7 @@ export class PlayableCharacter {
             }
             else if (keyTracker.a.pressed) {
 
-                if (keyTracker.k.pressed && char.stamina >= 30) {
+                if (keyTracker.k.pressed && char.stamina >= 0) {
                     char.pos.x -= char.runningSpeed;
                     char.stamina -= char.staminaLoss;
                     return;
@@ -96,7 +96,7 @@ export class PlayableCharacter {
             }
             else if (keyTracker.d.pressed) {
 
-                if (keyTracker.k.pressed && char.stamina >= 30) {
+                if (keyTracker.k.pressed && char.stamina >= 0) {
                     char.pos.x += char.runningSpeed;
                     char.stamina -= char.staminaLoss;
                     return;
@@ -122,7 +122,7 @@ export class PlayableCharacter {
                 }
             }
             
-            else if (keyTracker.k.pressed && char.stamina < 30) {
+            else if (keyTracker.k.pressed && char.stamina <= 0) {
                 char.stamina += char.staminaGain;
                 return;
             }
