@@ -395,9 +395,9 @@ function displayHealthAndStamina() {
     ctx.fillRect(8, 28, Math.trunc(world.playableCharacter.stamina), 16 );
     ctx.font = "bold 16px serif";
     ctx.fillStyle = "#E9168D";
-    ctx.fillText(Math.trunc(world.playableCharacter.health), (112 / 2) - (ctx.measureText(Math.trunc(world.playableCharacter.health)).width / 2), 22);
+    ctx.fillText(`Health: ${Math.trunc(world.playableCharacter.health)}`, (112 / 2) - (ctx.measureText(`Health: ${Math.trunc(world.playableCharacter.health)}`).width / 2), 22);
     ctx.fillStyle = "#E9DB16";
-    ctx.fillText(Math.trunc(world.playableCharacter.stamina), (112 / 2) - (ctx.measureText(Math.trunc(world.playableCharacter.stamina)).width / 2), 42);
+    ctx.fillText(`Stamina: ${Math.trunc(world.playableCharacter.stamina)}`, (112 / 2) - (ctx.measureText(`Stamina: ${Math.trunc(world.playableCharacter.stamina)}`).width / 2), 42);
 }
 
 export function runGameplayScreen() {
