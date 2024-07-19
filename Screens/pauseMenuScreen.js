@@ -203,6 +203,8 @@ const iButton = document.getElementById("actionButtonsTop");
 const jButton = document.getElementById("actionButtonsLeft");
 const lButton = document.getElementById("actionButtonsRight");
 const kButton = document.getElementById("actionButtonsBottom");
+
+const zButton = document.getElementById("pauseButton");
 //
 
 const keyTracker = {
@@ -1026,12 +1028,20 @@ export function pauseMenuKeys() {
                                 canvas.width = currentScreenWidth;
                                 world.playableCharacter.cameraBoundaryWidth = canvas.width / 2;
                                 world.playableCharacter.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                                world.background.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                                world.tilePlacements.forEach(tilePlacement => {
+                                    tilePlacement.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                                });
                             }
                             else if (PM_currentOption === PM_OPTIONS.ScreenOptionsMenu[3]) {
                                 currentScreenHeight = PM_currentScreenHeightOption;
                                 canvas.height = currentScreenHeight;
                                 world.playableCharacter.cameraBoundaryHeight = canvas.height / 2;
                                 world.playableCharacter.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                                world.background.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                                world.tilePlacements.forEach(tilePlacement => {
+                                    tilePlacement.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                                });
                             }
                         }
                         break;
@@ -1847,12 +1857,20 @@ export function pauseMenuKeys() {
                     canvas.width = currentScreenWidth;
                     world.playableCharacter.cameraBoundaryWidth = canvas.width / 2;
                     world.playableCharacter.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                    world.background.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                    world.tilePlacements.forEach(tilePlacement => {
+                        tilePlacement.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                    });
                 }
                 else if (PM_currentOption === PM_OPTIONS.ScreenOptionsMenu[3]) {
                     currentScreenHeight = PM_currentScreenHeightOption;
                     canvas.height = currentScreenHeight;
                     world.playableCharacter.cameraBoundaryHeight = canvas.height / 2;
                     world.playableCharacter.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                    world.background.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                    world.tilePlacements.forEach(tilePlacement => {
+                        tilePlacement.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                    });
                 }
             }
         }
@@ -1916,6 +1934,26 @@ export function pauseMenuKeys() {
             else if (PM_currentState === PM_STATES[7]) {
                 resetOtherOptionsMenuStates();
             }
+        }
+    });
+
+    zButton.addEventListener("touchstart", (event) => {
+        if (allowKeys && pauseMenuKeysAllowed && gameCurrentState === STATES.PauseMenu) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.z.pressed = true;
+        }
+    });
+
+    zButton.addEventListener("touchend", (event) => {
+        if (allowKeys && pauseMenuKeysAllowed && gameCurrentState === STATES.PauseMenu) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.z.pressed = false;
+            resetPauseMenuStates();
+            gameCurrentState = STATES.Gameplay;
         }
     });
 }

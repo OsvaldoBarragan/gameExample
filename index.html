@@ -33,7 +33,7 @@
             }
             #dPad {
                 position: absolute;
-                left: 5%;
+                left: 2.5%;
                 top: 50%;
                 width: 30%;
                 height: 35%;
@@ -44,7 +44,7 @@
             }
             #actionButtons {
                 position: absolute;
-                right: 5%;
+                right: 2.5%;
                 top: 50%;
                 width: 30%;
                 height: 35%;
@@ -53,10 +53,23 @@
                 opacity: 0.5;
                 transform: scale(1);
             }
-            #actionButtonsTop, #actionButtonsLeft, #actionButtonsRight, #actionButtonsBottom {
-                border-radius: 40%;
+            #pauseButton {
+                position: absolute;
+                left: 2.5%;
+                top: 2.5%;
+                width: 15%;
+                height: 11.666667%;
+                display: flex;
+                opacity: 0.5;
+                transform: scale(1);
+                border-width: 2px;
+                border-color: #991b1b;
+                border-radius: 0.375rem;
             }
-            #dPadTop, #dPadLeft, #dPadRight, #dPadBottom, #actionButtonsTop, #actionButtonsLeft, #actionButtonsRight, #actionButtonsBottom {
+            /* #actionButtonsTop, #actionButtonsLeft, #actionButtonsRight, #actionButtonsBottom {
+                border-radius: 40%;
+            } */
+            #dPadTop, #dPadLeft, #dPadRight, #dPadBottom, #actionButtonsTop, #actionButtonsLeft, #actionButtonsRight, #actionButtonsBottom, #pauseButton {
                 position: absolute;
                 display: flex;
                 flex-direction: row;
@@ -124,12 +137,12 @@
                 box-shadow: 2px 0px 10px floralwhite;
                 background-color: #363636;
             }
-            #dPadBottom:hover, #actionButtonsBottom:hover {
+            #dPadBottom:hover, #actionButtonsBottom:hover, #pauseButton:hover {
                 align-items: flex-end;
                 box-shadow: 0px 2px 10px floralwhite;
                 background-color: #363636;
             }
-            #dPadTopText, #dPadLeftText, #dPadRightText, #dPadBottomText {
+            #dPadTopText, #dPadLeftText, #dPadRightText, #dPadBottomText, #actionButtonsTopText, #actionButtonsLeftText, #actionButtonsRightText, #actionButtonsBottomText, #pauseButtonText {
                 position: relative;
                 user-select: none;
                 font-size: 1rem;
@@ -167,6 +180,9 @@
             <button id = "actionButtonsBottom">
                 <h1 id = "actionButtonsBottomText">K</h1>
             </button>
+        </div>
+        <div id = "pauseButton">
+            <h1 id = "pauseButtonText">Pause</h1>
         </div>
     </body>
 </html>

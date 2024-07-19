@@ -21,6 +21,16 @@ export class PlayableCharacter {
         this.health = 100;
         this.healthGain = 0.05;
 
+        this.origCameraPos = {
+            x: (canvas.width / 2) - (this.cameraBoundaryWidth / 2),
+            y: (canvas.height / 2) - (this.cameraBoundaryHeight / 2)
+        };
+
+        this.origPos = {
+            x: (canvas.width / 2) - (this.width / 2),
+            y: (canvas.height / 2) - (this.height / 2)
+        };
+
         this.cameraPos = {
             x: (canvas.width / 2) - (this.cameraBoundaryWidth / 2),
             y: (canvas.height / 2) - (this.cameraBoundaryHeight / 2)
@@ -41,14 +51,14 @@ export class PlayableCharacter {
 
         if (this.hasLoaded) {
             // Player Boundary Tracker
-            ctx.fillStyle = "white";
-            ctx.fillRect((canvas.width / 2) - (this.cameraBoundaryWidth / 2), (canvas.height / 2) - (this.cameraBoundaryHeight / 2), this.cameraBoundaryWidth, this.cameraBoundaryHeight);
+            // ctx.fillStyle = "white";
+            // ctx.fillRect((canvas.width / 2) - (this.cameraBoundaryWidth / 2), (canvas.height / 2) - (this.cameraBoundaryHeight / 2), this.cameraBoundaryWidth, this.cameraBoundaryHeight);
             //
             ctx.fillStyle = "#2599da";
             ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
             // Player Boundary Text
-            ctx.fillStyle = "black";
-            ctx.fillText("Camera Movement Boundaries", (canvas.width / 2) - (ctx.measureText("Camera Movement Boundaries").width / 2), (canvas.height / 2) - (this.cameraBoundaryHeight / 4));
+            // ctx.fillStyle = "black";
+            // ctx.fillText("Camera Movement Boundaries", (canvas.width / 2) - (ctx.measureText("Camera Movement Boundaries").width / 2), (canvas.height / 2) - (this.cameraBoundaryHeight / 4));
             //
         }
     }
@@ -64,6 +74,11 @@ export class PlayableCharacter {
             let xChange = (currentScreenWidth - 480) / 2;
             let yChange = (currentScreenHeight - 270) / 2;
             //
+
+            if (world.background.playerCollision) {
+                return;
+            }
+
             if (keyTracker.w.pressed) {
                 if (char.pos.y <= char.cameraPos.y + scaleHeight) {
                     if (world.background.pos.y >= 0) {
@@ -226,6 +241,7 @@ export class PlayableCharacter {
             let xChange = (currentScreenWidth - 480) / 2;
             let yChange = (currentScreenHeight - 270) / 2;
             //
+
             if (keyTracker.w.pressed) {
                 if (char.pos.y <= char.cameraPos.y + scaleHeight) {
                     if (world.background.pos.y >= 0) {
@@ -234,16 +250,25 @@ export class PlayableCharacter {
                     else {
                         if (keyTracker.k.pressed && char.stamina >= 0) {
                             world.background.pos.y += char.runningSpeed;
+                            world.tilePlacements.forEach(tilePlacement => {
+                                tilePlacement.pos.y += char.runningSpeed;
+                            });
                             return;
                         }
                         else {
                             world.background.pos.y += char.walkingSpeed;
+                            world.tilePlacements.forEach(tilePlacement => {
+                                tilePlacement.pos.y += char.walkingSpeed;
+                            });
                             return;
                         }
                     }
                 }
                 else {
                     world.background.pos.y += 0;
+                    world.tilePlacements.forEach(tilePlacement => {
+                        tilePlacement.pos.y += 0;
+                    });
                 }
             }
             else if (keyTracker.s.pressed) {
@@ -254,16 +279,25 @@ export class PlayableCharacter {
                     else {
                         if (keyTracker.k.pressed && char.stamina >= 0) {
                             world.background.pos.y -= char.runningSpeed;
+                            world.tilePlacements.forEach(tilePlacement => {
+                                tilePlacement.pos.y -= char.runningSpeed;
+                            });
                             return;
                         }
                         else {
                             world.background.pos.y -= char.walkingSpeed;
+                            world.tilePlacements.forEach(tilePlacement => {
+                                tilePlacement.pos.y -= char.walkingSpeed;
+                            });
                             return;
                         }
                     }
                 }
                 else {
                     world.background.pos.y -= 0;
+                    world.tilePlacements.forEach(tilePlacement => {
+                        tilePlacement.pos.y -= 0;
+                    });
                 }
             }
             else if (keyTracker.a.pressed) {
@@ -274,16 +308,25 @@ export class PlayableCharacter {
                     else {
                         if (keyTracker.k.pressed && char.stamina >= 0) {
                             world.background.pos.x += char.runningSpeed;
+                            world.tilePlacements.forEach(tilePlacement => {
+                                tilePlacement.pos.x += char.runningSpeed;
+                            });
                             return;
                         }
                         else {
                             world.background.pos.x += char.walkingSpeed;
+                            world.tilePlacements.forEach(tilePlacement => {
+                                tilePlacement.pos.x += char.walkingSpeed;
+                            });
                             return;
                         }
                     }
                 }
                 else {
                     world.background.pos.x += 0;
+                    world.tilePlacements.forEach(tilePlacement => {
+                        tilePlacement.pos.x += 0;
+                    });
                 }
             }
             else if (keyTracker.d.pressed) {
@@ -294,16 +337,25 @@ export class PlayableCharacter {
                     else {
                         if (keyTracker.k.pressed && char.stamina >= 0) {
                             world.background.pos.x -= char.runningSpeed;
+                            world.tilePlacements.forEach(tilePlacement => {
+                                tilePlacement.pos.x -= char.runningSpeed;
+                            });
                             return;
                         }
                         else {
                             world.background.pos.x -= char.walkingSpeed;
+                            world.tilePlacements.forEach(tilePlacement => {
+                                tilePlacement.pos.x -= char.walkingSpeed;
+                            });
                             return;
                         }
                     }
                 }
                 else {
                     world.background.pos.x -= 0;
+                    world.tilePlacements.forEach(tilePlacement => {
+                        tilePlacement.pos.x -= 0;
+                    });
                 }
             }
         }

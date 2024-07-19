@@ -24,6 +24,8 @@ const iButton = document.getElementById("actionButtonsTop");
 const jButton = document.getElementById("actionButtonsLeft");
 const lButton = document.getElementById("actionButtonsRight");
 const kButton = document.getElementById("actionButtonsBottom");
+
+const zButton = document.getElementById("pauseButton");
 //
 
 export const keyTracker = {
@@ -380,10 +382,32 @@ export function gameplayKeys() {
             keyTracker.l.pressed = false;
         }
     });
+
+    zButton.addEventListener("touchstart", (event) => {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.z.pressed = true;
+        }
+    });
+
+    zButton.addEventListener("touchend", (event) => {
+        if (allowKeys && gameplayKeysAllowed && gameCurrentState === STATES.Gameplay) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            keyTracker.z.pressed = false;
+            gameCurrentState = STATES.PauseMenu;
+        }
+    });
 }
 
 function loadClasses() {
     world.background.update();
+    world.tilePlacements.forEach(tilePlacement => {
+        tilePlacement.update();
+    });
     world.playableCharacter.update();
 }
 
