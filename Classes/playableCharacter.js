@@ -54,7 +54,7 @@ export class PlayableCharacter {
             // ctx.fillStyle = "white";
             // ctx.fillRect((canvas.width / 2) - (this.cameraBoundaryWidth / 2), (canvas.height / 2) - (this.cameraBoundaryHeight / 2), this.cameraBoundaryWidth, this.cameraBoundaryHeight);
             //
-            ctx.fillStyle = "#2599da";
+            ctx.fillStyle = "#A82517";
             ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
             // Player Boundary Text
             // ctx.fillStyle = "black";
