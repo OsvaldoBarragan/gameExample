@@ -1,6 +1,7 @@
 "use strict";
 
 import { allowKeys, STATES } from "./../index.js";
+import { world } from "./gameplayScreen.js";
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
@@ -10,14 +11,18 @@ window.pauseMenuKeysAllowed = false;
 const pauseMenuContainerX = 16;
 const pauseMenuContainerY = 16;
 
+let colorCreationOption = "Primary";
+let colorCreationCurrentColor = "#000000";
+
 export const PM_STATES = [
     "PauseMenu",
     "ChangeBackgroundColorMenu",
     "PlayerStatsMenu",
     "OtherOptionsMenu",
     "ViewCreditsMenu",
+    "ColorCreationMenu",
     "ButtonOptionsMenu",
-    "ScreenOptionsMenu"
+    "ScreenOptionsMenu",
 ];
 
 export const PM_OPTIONS = {
@@ -26,18 +31,20 @@ export const PM_OPTIONS = {
     PlayerStatsMenu: [], // 2
     OtherOptionsMenu: ["Current Screen", "Button Options", "Screen Options"], // 3
     ViewCreditsMenu: [], // 4
-    OtherOptions_ChangeScreenSize: [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2], // 5
+    ColorCreationMenu: ["Char1:", "Char2:", "Char3:", "Char4:", "Char5:", "Char6:", "Change Color"], // 5
     ButtonOptionsMenu: ["D-Pad", "Action Buttons"], // 6
     ScreenOptionsMenu: ["X Position", "Y Position", "Width", "Height"], // 7
+    OtherOptions_ChangeScreenSize: [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2],
     ScreenOptions_XPosition: [30, 40, 50, 60, 70],
     ScreenOptions_YPosition: [30, 40, 50, 60, 70],
     ScreenOptions_Width: [480, 480 + (16 * 1), 480 + (16 * 2), 480 + (16 * 3), 480 + (16 * 4)],
     ScreenOptions_Height: [270, 270 + (16 * 1), 270 + (16 * 2), 270 + (16 * 3), 270 + (16 * 4)],
-    ChangeBackgroundColor_PrimaryBackground: ["#9F453D", "#CCA873", "#374D77", "#4B96AC", "#2B2B2B", "Random", "Create"],
-    ChangeBackgroundColor_SecondaryBackground: ["#9F453D", "#CCA873", "#374D77", "#4B96AC", "#2B2B2B", "Random", "Create"],
-    ChangeBackgroundColor_Button: ["#9F453D", "#CCA873", "#374D77", "#4B96AC", "#2B2B2B", "Random", "Create"],
-    ChangeBackgroundColor_HighlightedButton: ["#9F453D", "#CCA873", "#374D77", "#4B96AC", "#2B2B2B", "Random", "Create"],
-    ChangeBackgroundColor_Border: ["#9F453D", "#CCA873", "#374D77", "#4B96AC", "#2B2B2B", "Random", "Create"],
+    ChangeBackgroundColor_PrimaryBackground: ["#101E6C", "#6B81C0", "#374D77", "#4B96AC", "#2B2B2B", "Random", "Create"],
+    ChangeBackgroundColor_SecondaryBackground: ["#101E6C", "#6B81C0", "#374D77", "#4B96AC", "#2B2B2B", "Random", "Create"],
+    ChangeBackgroundColor_Button: ["#101E6C", "#6B81C0", "#374D77", "#4B96AC", "#2B2B2B", "Random", "Create"],
+    ChangeBackgroundColor_HighlightedButton: ["#101E6C", "#6B81C0", "#374D77", "#4B96AC", "#2B2B2B", "Random", "Create"],
+    ChangeBackgroundColor_Border: ["#101E6C", "#6B81C0", "#374D77", "#4B96AC", "#2B2B2B", "Random", "Create"],
+    ColorCreation_Char: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "E", "A", "D", "F", "C", "B"],
 }
 
 // In ChangeBackgroundColorMenu (Use A and D to navigate through options)
@@ -62,6 +69,32 @@ let PM_currentBorderColorOptionNumber = 0;
 let PM_currentBorderColorOption = PM_OPTIONS.ChangeBackgroundColor_Border[PM_currentBorderColorOptionNumber];
 //
 
+// In ColorCreationMenu (Use A and D to navigate through options)
+let currentColorKey1 = primaryBackgroundColor[1];
+let PM_currentColorKey1OptionNumber = 0;
+let PM_currentColorKey1Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey1OptionNumber];
+
+let currentColorKey2 = primaryBackgroundColor[2];
+let PM_currentColorKey2OptionNumber = 0;
+let PM_currentColorKey2Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey2OptionNumber];
+
+let currentColorKey3 = primaryBackgroundColor[3];
+let PM_currentColorKey3OptionNumber = 0;
+let PM_currentColorKey3Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey3OptionNumber];
+
+let currentColorKey4 = primaryBackgroundColor[4];
+let PM_currentColorKey4OptionNumber = 0;
+let PM_currentColorKey4Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey4OptionNumber];
+
+let currentColorKey5 = primaryBackgroundColor[5];
+let PM_currentColorKey5OptionNumber = 0;
+let PM_currentColorKey5Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey5OptionNumber];
+
+let currentColorKey6 = primaryBackgroundColor[6];
+let PM_currentColorKey6OptionNumber = 0;
+let PM_currentColorKey6Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey6OptionNumber];
+//
+
 // In OtherOptionsMenu (Use A and D to navigate through options)
 let currentScreenSize = PM_OPTIONS.OtherOptions_ChangeScreenSize[3];
 let PM_currentScreenSizeOptionNumber = 0;
@@ -77,11 +110,11 @@ let currentScreenY = PM_OPTIONS.ScreenOptions_YPosition[2];
 let PM_currentScreenYOptionNumber = 0;
 let PM_currentScreenYOption = PM_OPTIONS.ScreenOptions_YPosition[PM_currentScreenYOptionNumber];
 
-let currentScreenWidth = PM_OPTIONS.ScreenOptions_Width[0];
+export let currentScreenWidth = PM_OPTIONS.ScreenOptions_Width[0];
 let PM_currentScreenWidthOptionNumber = 0;
 let PM_currentScreenWidthOption = PM_OPTIONS.ScreenOptions_Width[PM_currentScreenWidthOptionNumber];
 
-let currentScreenHeight = PM_OPTIONS.ScreenOptions_Height[0];
+export let currentScreenHeight = PM_OPTIONS.ScreenOptions_Height[0];
 let PM_currentScreenHeightOptionNumber = 0;
 let PM_currentScreenHeightOption = PM_OPTIONS.ScreenOptions_Height[PM_currentScreenHeightOptionNumber];
 //
@@ -91,11 +124,38 @@ let PM_currentOptionNumber = 0;
 export let PM_currentState = PM_STATES[PM_currentStateNumber];
 export let PM_currentOption = PM_OPTIONS.PauseMenu[PM_currentOptionNumber];
 
+export function resetColorKeyOptions() {
+    PM_currentColorKey1OptionNumber = 0;
+    PM_currentColorKey1Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey1OptionNumber];
+
+    PM_currentColorKey2OptionNumber = 0;
+    PM_currentColorKey2Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey2OptionNumber];
+
+    PM_currentColorKey3OptionNumber = 0;
+    PM_currentColorKey3Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey3OptionNumber];
+
+    PM_currentColorKey4OptionNumber = 0;
+    PM_currentColorKey4Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey4OptionNumber];
+
+    PM_currentColorKey5OptionNumber = 0;
+    PM_currentColorKey5Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey5OptionNumber];
+
+    PM_currentColorKey6OptionNumber = 0;
+    PM_currentColorKey6Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey6OptionNumber];
+}
+
 export function resetPauseMenuStates() {
     PM_currentStateNumber = 0;
     PM_currentOptionNumber = 0;
     PM_currentState = PM_STATES[PM_currentStateNumber];
     PM_currentOption = PM_OPTIONS.PauseMenu[PM_currentOptionNumber];
+}
+
+export function resetChangeBackgroundColorMenu() {
+    PM_currentStateNumber = 1;
+    PM_currentOptionNumber = 0;
+    PM_currentState = PM_STATES[PM_currentStateNumber];
+    PM_currentOption = PM_OPTIONS.ChangeBackgroundColorMenu[PM_currentOptionNumber];
 }
 
 export function resetOtherOptionsMenuStates() {
@@ -110,7 +170,7 @@ function scaleCanvasSize(num) {
 }
 
 function randomizeColor(element) {
-    const charsForHexCode = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "e", "a", "d", "f", "c", "b"];
+    const charsForHexCode = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "E", "A", "D", "F", "C", "B"];
     let newHexCode = "#";
     for (let i = 0; i < 6; i++) {
         let colorChar = Math.floor((Math.random() * charsForHexCode.length));
@@ -122,6 +182,15 @@ function randomizeColor(element) {
     else if (element === "buttonColor") {buttonColor = newHexCode;}
     else if (element === "highlightedButtonColor") {highlightedButtonColor = newHexCode;}
     else if (element === "borderColor") {borderColor = newHexCode;}
+}
+
+function realTimeColorBoxChange() {
+    colorCreationCurrentColor = "#" + PM_currentColorKey1Option + PM_currentColorKey2Option + PM_currentColorKey3Option + PM_currentColorKey4Option + PM_currentColorKey5Option + PM_currentColorKey6Option;
+    if (colorCreationOption === "Primary") {primaryBackgroundColor = colorCreationCurrentColor;}
+    else if (colorCreationOption === "Secondary") {secondaryBackgroundColor = colorCreationCurrentColor;}
+    else if (colorCreationOption === "Button") {buttonColor = colorCreationCurrentColor;}
+    else if (colorCreationOption === "HighlightButton") {highlightedButtonColor = colorCreationCurrentColor;}
+    else if (colorCreationOption === "Border") {borderColor = colorCreationCurrentColor;}
 }
 
 // Buttons on the page
@@ -233,6 +302,16 @@ export function pauseMenuKeys() {
                         else if (PM_currentState === PM_STATES[4]) {
                             
                         }
+                        else if (PM_currentState === PM_STATES[5]) {
+                            if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[0]) {
+                                PM_currentOptionNumber = PM_OPTIONS.ColorCreationMenu.length - 1;
+                                PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
+                            }
+                            else {
+                                PM_currentOptionNumber -= 1;
+                                PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
+                            }
+                        }
                         else if (PM_currentState === PM_STATES[6]) {
                             if (PM_currentOption === PM_OPTIONS.ButtonOptionsMenu[0]) {
                                 PM_currentOptionNumber = PM_OPTIONS.ButtonOptionsMenu.length - 1;
@@ -294,6 +373,16 @@ export function pauseMenuKeys() {
                         }
                         else if (PM_currentState === PM_STATES[4]) {
                             
+                        }
+                        else if (PM_currentState === PM_STATES[5]) {
+                            if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[PM_OPTIONS.ColorCreationMenu.length - 1]) {
+                                PM_currentOptionNumber = 0;
+                                PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
+                            }
+                            else {
+                                PM_currentOptionNumber += 1;
+                                PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
+                            }
                         }
                         else if (PM_currentState === PM_STATES[6]) {
                             if (PM_currentOption === PM_OPTIONS.ButtonOptionsMenu[PM_OPTIONS.ButtonOptionsMenu.length - 1]) {
@@ -382,6 +471,70 @@ export function pauseMenuKeys() {
                                 else {
                                     PM_currentScreenSizeOptionNumber -= 1;
                                     PM_currentScreenSizeOption = PM_OPTIONS.OtherOptions_ChangeScreenSize[PM_currentScreenSizeOptionNumber];
+                                }
+                            }
+                        }
+                        else if (PM_currentState === PM_STATES[5]) {
+                            if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[0]) {
+                                if (PM_currentColorKey1Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                                    PM_currentColorKey1OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                                    PM_currentColorKey1Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey1OptionNumber];
+                                }
+                                else {
+                                    PM_currentColorKey1OptionNumber -= 1;
+                                    PM_currentColorKey1Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey1OptionNumber];
+                                }
+                            }
+                            else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[1]) {
+                                if (PM_currentColorKey2Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                                    PM_currentColorKey2OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                                    PM_currentColorKey2Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey2OptionNumber];
+                                    console.log(PM_currentColorKey2Option);
+                                }
+                                else {
+                                    PM_currentColorKey2OptionNumber -= 1;
+                                    PM_currentColorKey2Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey2OptionNumber];
+                                    console.log(PM_currentColorKey2Option);
+                                }
+                            }
+                            else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[2]) {
+                                if (PM_currentColorKey3Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                                    PM_currentColorKey3OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                                    PM_currentColorKey3Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey3OptionNumber];
+                                }
+                                else {
+                                    PM_currentColorKey3OptionNumber -= 1;
+                                    PM_currentColorKey3Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey3OptionNumber];
+                                }
+                            }
+                            else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[3]) {
+                                if (PM_currentColorKey4Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                                    PM_currentColorKey4OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                                    PM_currentColorKey4Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey4OptionNumber];
+                                }
+                                else {
+                                    PM_currentColorKey4OptionNumber -= 1;
+                                    PM_currentColorKey4Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey4OptionNumber];
+                                }
+                            }
+                            else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[4]) {
+                                if (PM_currentColorKey5Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                                    PM_currentColorKey5OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                                    PM_currentColorKey5Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey5OptionNumber];
+                                }
+                                else {
+                                    PM_currentColorKey5OptionNumber -= 1;
+                                    PM_currentColorKey5Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey5OptionNumber];
+                                }
+                            }
+                            else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[5]) {
+                                if (PM_currentColorKey6Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                                    PM_currentColorKey6OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                                    PM_currentColorKey6Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey6OptionNumber];
+                                }
+                                else {
+                                    PM_currentColorKey6OptionNumber -= 1;
+                                    PM_currentColorKey6Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey6OptionNumber];
                                 }
                             }
                         }
@@ -494,6 +647,68 @@ export function pauseMenuKeys() {
                                 else {
                                     PM_currentScreenSizeOptionNumber += 1;
                                     PM_currentScreenSizeOption = PM_OPTIONS.OtherOptions_ChangeScreenSize[PM_currentScreenSizeOptionNumber];
+                                }
+                            }
+                        }
+                        else if (PM_currentState === PM_STATES[5]) {
+                            if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[0]) {
+                                if (PM_currentColorKey1Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                                    PM_currentColorKey1OptionNumber = 0;
+                                    PM_currentColorKey1Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey1OptionNumber];
+                                }
+                                else {
+                                    PM_currentColorKey1OptionNumber += 1;
+                                    PM_currentColorKey1Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey1OptionNumber];
+                                }
+                            }
+                            else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[1]) {
+                                if (PM_currentColorKey2Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                                    PM_currentColorKey2OptionNumber = 0;
+                                    PM_currentColorKey2Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey2OptionNumber];
+                                }
+                                else {
+                                    PM_currentColorKey2OptionNumber += 1;
+                                    PM_currentColorKey2Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey2OptionNumber];
+                                }
+                            }
+                            else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[2]) {
+                                if (PM_currentColorKey3Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                                    PM_currentColorKey3OptionNumber = 0;
+                                    PM_currentColorKey3Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey3OptionNumber];
+                                }
+                                else {
+                                    PM_currentColorKey3OptionNumber += 1;
+                                    PM_currentColorKey3Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey3OptionNumber];
+                                }
+                            }
+                            else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[3]) {
+                                if (PM_currentColorKey4Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                                    PM_currentColorKey4OptionNumber = 0;
+                                    PM_currentColorKey4Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey4OptionNumber];
+                                }
+                                else {
+                                    PM_currentColorKey4OptionNumber += 1;
+                                    PM_currentColorKey4Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey4OptionNumber];
+                                }
+                            }
+                            else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[4]) {
+                                if (PM_currentColorKey5Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                                    PM_currentColorKey5OptionNumber = 0;
+                                    PM_currentColorKey5Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey5OptionNumber];
+                                }
+                                else {
+                                    PM_currentColorKey5OptionNumber += 1;
+                                    PM_currentColorKey5Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey5OptionNumber];
+                                }
+                            }
+                            else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[5]) {
+                                if (PM_currentColorKey6Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                                    PM_currentColorKey6OptionNumber = 0;
+                                    PM_currentColorKey6Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey6OptionNumber];
+                                }
+                                else {
+                                    PM_currentColorKey6OptionNumber += 1;
+                                    PM_currentColorKey6Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey6OptionNumber];
                                 }
                             }
                         }
@@ -663,7 +878,19 @@ export function pauseMenuKeys() {
                                     randomizeColor("primaryBackgroundColor");
                                 }
                                 else if (PM_currentPrimaryBackgroundColorOption === "Create") {
-                                    console.log("Not created yet");
+                                    colorCreationOption = "Primary";
+                                    colorCreationCurrentColor = "#000000";
+                                    resetColorKeyOptions();
+                                    currentColorKey1 = primaryBackgroundColor[1];
+                                    currentColorKey2 = primaryBackgroundColor[2];
+                                    currentColorKey3 = primaryBackgroundColor[3];
+                                    currentColorKey4 = primaryBackgroundColor[4];
+                                    currentColorKey5 = primaryBackgroundColor[5];
+                                    currentColorKey6 = primaryBackgroundColor[6];
+                                    PM_currentStateNumber = 5;
+                                    PM_currentOptionNumber = 0;
+                                    PM_currentState = PM_STATES[PM_currentStateNumber];
+                                    PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
                                 }
                                 else {
                                     primaryBackgroundColor = PM_currentPrimaryBackgroundColorOption;
@@ -674,7 +901,19 @@ export function pauseMenuKeys() {
                                     randomizeColor("secondaryBackgroundColor");
                                 }
                                 else if (PM_currentSecondaryBackgroundColorOption === "Create") {
-                                    console.log("Not created yet");
+                                    colorCreationOption = "Secondary";
+                                    colorCreationCurrentColor = "#000000";
+                                    resetColorKeyOptions();
+                                    currentColorKey1 = secondaryBackgroundColor[1];
+                                    currentColorKey2 = secondaryBackgroundColor[2];
+                                    currentColorKey3 = secondaryBackgroundColor[3];
+                                    currentColorKey4 = secondaryBackgroundColor[4];
+                                    currentColorKey5 = secondaryBackgroundColor[5];
+                                    currentColorKey6 = secondaryBackgroundColor[6];
+                                    PM_currentStateNumber = 5;
+                                    PM_currentOptionNumber = 0;
+                                    PM_currentState = PM_STATES[PM_currentStateNumber];
+                                    PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
                                 }
                                 else {
                                     secondaryBackgroundColor = PM_currentSecondaryBackgroundColorOption;
@@ -685,7 +924,19 @@ export function pauseMenuKeys() {
                                     randomizeColor("buttonColor");
                                 }
                                 else if (PM_currentButtonColorOption === "Create") {
-                                    console.log("Not created yet");
+                                    colorCreationOption = "Button";
+                                    colorCreationCurrentColor = "#000000";
+                                    resetColorKeyOptions();
+                                    currentColorKey1 = buttonColor[1];
+                                    currentColorKey2 = buttonColor[2];
+                                    currentColorKey3 = buttonColor[3];
+                                    currentColorKey4 = buttonColor[4];
+                                    currentColorKey5 = buttonColor[5];
+                                    currentColorKey6 = buttonColor[6];
+                                    PM_currentStateNumber = 5;
+                                    PM_currentOptionNumber = 0;
+                                    PM_currentState = PM_STATES[PM_currentStateNumber];
+                                    PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
                                 }
                                 else {
                                     buttonColor = PM_currentButtonColorOption;
@@ -696,7 +947,19 @@ export function pauseMenuKeys() {
                                     randomizeColor("highlightedButtonColor");
                                 }
                                 else if (PM_currentHighlightedButtonColorOption === "Create") {
-                                    console.log("Not created yet");
+                                    colorCreationOption = "HighlightButton";
+                                    colorCreationCurrentColor = "#000000";
+                                    resetColorKeyOptions();
+                                    currentColorKey1 = highlightedButtonColor[1];
+                                    currentColorKey2 = highlightedButtonColor[2];
+                                    currentColorKey3 = highlightedButtonColor[3];
+                                    currentColorKey4 = highlightedButtonColor[4];
+                                    currentColorKey5 = highlightedButtonColor[5];
+                                    currentColorKey6 = highlightedButtonColor[6];
+                                    PM_currentStateNumber = 5;
+                                    PM_currentOptionNumber = 0;
+                                    PM_currentState = PM_STATES[PM_currentStateNumber];
+                                    PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
                                 }
                                 else {
                                     highlightedButtonColor = PM_currentHighlightedButtonColorOption;
@@ -707,7 +970,19 @@ export function pauseMenuKeys() {
                                     randomizeColor("borderColor");
                                 }
                                 else if (PM_currentBorderColorOption === "Create") {
-                                    console.log("Not created yet");
+                                    colorCreationOption = "Border";
+                                    colorCreationCurrentColor = "#000000";
+                                    resetColorKeyOptions();
+                                    currentColorKey1 = borderColor[1];
+                                    currentColorKey2 = borderColor[2];
+                                    currentColorKey3 = borderColor[3];
+                                    currentColorKey4 = borderColor[4];
+                                    currentColorKey5 = borderColor[5];
+                                    currentColorKey6 = borderColor[6];
+                                    PM_currentStateNumber = 5;
+                                    PM_currentOptionNumber = 0;
+                                    PM_currentState = PM_STATES[PM_currentStateNumber];
+                                    PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
                                 }
                                 else {
                                     borderColor = PM_currentBorderColorOption;
@@ -732,6 +1007,11 @@ export function pauseMenuKeys() {
                                 PM_currentOption = PM_OPTIONS.ScreenOptionsMenu[PM_currentOptionNumber];
                             }
                         }
+                        else if (PM_currentState === PM_STATES[5]) {
+                            if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[6]) {
+                                realTimeColorBoxChange();
+                            }
+                        }
                         else if (PM_currentState === PM_STATES[7]) {
                             if (PM_currentOption === PM_OPTIONS.ScreenOptionsMenu[0]) {
                                 currentScreenX = PM_currentScreenXOption;
@@ -744,10 +1024,14 @@ export function pauseMenuKeys() {
                             else if (PM_currentOption === PM_OPTIONS.ScreenOptionsMenu[2]) {
                                 currentScreenWidth = PM_currentScreenWidthOption;
                                 canvas.width = currentScreenWidth;
+                                world.playableCharacter.cameraBoundaryWidth = canvas.width / 2;
+                                world.playableCharacter.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
                             }
                             else if (PM_currentOption === PM_OPTIONS.ScreenOptionsMenu[3]) {
                                 currentScreenHeight = PM_currentScreenHeightOption;
                                 canvas.height = currentScreenHeight;
+                                world.playableCharacter.cameraBoundaryHeight = canvas.height / 2;
+                                world.playableCharacter.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
                             }
                         }
                         break;
@@ -777,6 +1061,9 @@ export function pauseMenuKeys() {
                         }
                         else if (PM_currentState === PM_STATES[4]) {
                             resetPauseMenuStates();
+                        }
+                        else if (PM_currentState === PM_STATES[5]) {
+                            resetChangeBackgroundColorMenu();
                         }
                         else if (PM_currentState === PM_STATES[6]) {
                             resetOtherOptionsMenuStates();
@@ -845,6 +1132,16 @@ export function pauseMenuKeys() {
             }
             else if (PM_currentState === PM_STATES[4]) {
                 
+            }
+            else if (PM_currentState === PM_STATES[5]) {
+                if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[0]) {
+                    PM_currentOptionNumber = PM_OPTIONS.ColorCreationMenu.length - 1;
+                    PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
+                }
+                else {
+                    PM_currentOptionNumber -= 1;
+                    PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
+                }
             }
             else if (PM_currentState === PM_STATES[6]) {
                 if (PM_currentOption === PM_OPTIONS.ButtonOptionsMenu[0]) {
@@ -919,6 +1216,16 @@ export function pauseMenuKeys() {
             }
             else if (PM_currentState === PM_STATES[4]) {
                 
+            }
+            else if (PM_currentState === PM_STATES[5]) {
+                if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[PM_OPTIONS.ColorCreationMenu.length - 1]) {
+                    PM_currentOptionNumber = 0;
+                    PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
+                }
+                else {
+                    PM_currentOptionNumber += 1;
+                    PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
+                }
             }
             else if (PM_currentState === PM_STATES[6]) {
                 if (PM_currentOption === PM_OPTIONS.ButtonOptionsMenu[PM_OPTIONS.ButtonOptionsMenu.length - 1]) {
@@ -1019,6 +1326,70 @@ export function pauseMenuKeys() {
                     else {
                         PM_currentScreenSizeOptionNumber -= 1;
                         PM_currentScreenSizeOption = PM_OPTIONS.OtherOptions_ChangeScreenSize[PM_currentScreenSizeOptionNumber];
+                    }
+                }
+            }
+            else if (PM_currentState === PM_STATES[5]) {
+                if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[0]) {
+                    if (PM_currentColorKey1Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                        PM_currentColorKey1OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                        PM_currentColorKey1Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey1OptionNumber];
+                    }
+                    else {
+                        PM_currentColorKey1OptionNumber -= 1;
+                        PM_currentColorKey1Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey1OptionNumber];
+                    }
+                }
+                else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[1]) {
+                    if (PM_currentColorKey2Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                        PM_currentColorKey2OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                        PM_currentColorKey2Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey2OptionNumber];
+                        console.log(PM_currentColorKey2Option);
+                    }
+                    else {
+                        PM_currentColorKey2OptionNumber -= 1;
+                        PM_currentColorKey2Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey2OptionNumber];
+                        console.log(PM_currentColorKey2Option);
+                    }
+                }
+                else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[2]) {
+                    if (PM_currentColorKey3Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                        PM_currentColorKey3OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                        PM_currentColorKey3Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey3OptionNumber];
+                    }
+                    else {
+                        PM_currentColorKey3OptionNumber -= 1;
+                        PM_currentColorKey3Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey3OptionNumber];
+                    }
+                }
+                else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[3]) {
+                    if (PM_currentColorKey4Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                        PM_currentColorKey4OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                        PM_currentColorKey4Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey4OptionNumber];
+                    }
+                    else {
+                        PM_currentColorKey4OptionNumber -= 1;
+                        PM_currentColorKey4Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey4OptionNumber];
+                    }
+                }
+                else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[4]) {
+                    if (PM_currentColorKey5Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                        PM_currentColorKey5OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                        PM_currentColorKey5Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey5OptionNumber];
+                    }
+                    else {
+                        PM_currentColorKey5OptionNumber -= 1;
+                        PM_currentColorKey5Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey5OptionNumber];
+                    }
+                }
+                else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[5]) {
+                    if (PM_currentColorKey6Option === PM_OPTIONS.ColorCreation_Char[0]) {
+                        PM_currentColorKey6OptionNumber = PM_OPTIONS.ColorCreation_Char.length - 1;
+                        PM_currentColorKey6Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey6OptionNumber];
+                    }
+                    else {
+                        PM_currentColorKey6OptionNumber -= 1;
+                        PM_currentColorKey6Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey6OptionNumber];
                     }
                 }
             }
@@ -1146,6 +1517,68 @@ export function pauseMenuKeys() {
                     }
                 }
             }
+            else if (PM_currentState === PM_STATES[5]) {
+                if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[0]) {
+                    if (PM_currentColorKey1Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                        PM_currentColorKey1OptionNumber = 0;
+                        PM_currentColorKey1Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey1OptionNumber];
+                    }
+                    else {
+                        PM_currentColorKey1OptionNumber += 1;
+                        PM_currentColorKey1Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey1OptionNumber];
+                    }
+                }
+                else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[1]) {
+                    if (PM_currentColorKey2Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                        PM_currentColorKey2OptionNumber = 0;
+                        PM_currentColorKey2Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey2OptionNumber];
+                    }
+                    else {
+                        PM_currentColorKey2OptionNumber += 1;
+                        PM_currentColorKey2Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey2OptionNumber];
+                    }
+                }
+                else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[2]) {
+                    if (PM_currentColorKey3Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                        PM_currentColorKey3OptionNumber = 0;
+                        PM_currentColorKey3Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey3OptionNumber];
+                    }
+                    else {
+                        PM_currentColorKey3OptionNumber += 1;
+                        PM_currentColorKey3Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey3OptionNumber];
+                    }
+                }
+                else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[3]) {
+                    if (PM_currentColorKey4Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                        PM_currentColorKey4OptionNumber = 0;
+                        PM_currentColorKey4Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey4OptionNumber];
+                    }
+                    else {
+                        PM_currentColorKey4OptionNumber += 1;
+                        PM_currentColorKey4Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey4OptionNumber];
+                    }
+                }
+                else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[4]) {
+                    if (PM_currentColorKey5Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                        PM_currentColorKey5OptionNumber = 0;
+                        PM_currentColorKey5Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey5OptionNumber];
+                    }
+                    else {
+                        PM_currentColorKey5OptionNumber += 1;
+                        PM_currentColorKey5Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey5OptionNumber];
+                    }
+                }
+                else if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[5]) {
+                    if (PM_currentColorKey6Option === PM_OPTIONS.ColorCreation_Char[PM_OPTIONS.ColorCreation_Char.length - 1]) {
+                        PM_currentColorKey6OptionNumber = 0;
+                        PM_currentColorKey6Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey6OptionNumber];
+                    }
+                    else {
+                        PM_currentColorKey6OptionNumber += 1;
+                        PM_currentColorKey6Option = PM_OPTIONS.ColorCreation_Char[PM_currentColorKey6OptionNumber];
+                    }
+                }
+            }
             else if (PM_currentState === PM_STATES[7]) {
                 if (PM_currentOption === PM_OPTIONS.ScreenOptionsMenu[0]) {
                     if (PM_currentScreenXOption === PM_OPTIONS.ScreenOptions_XPosition[PM_OPTIONS.ScreenOptions_XPosition.length - 1]) {
@@ -1266,7 +1699,19 @@ export function pauseMenuKeys() {
                         randomizeColor("primaryBackgroundColor");
                     }
                     else if (PM_currentPrimaryBackgroundColorOption === "Create") {
-                        console.log("Not created yet");
+                        colorCreationOption = "Primary";
+                        colorCreationCurrentColor = "#000000";
+                        resetColorKeyOptions();
+                        currentColorKey1 = primaryBackgroundColor[1];
+                        currentColorKey2 = primaryBackgroundColor[2];
+                        currentColorKey3 = primaryBackgroundColor[3];
+                        currentColorKey4 = primaryBackgroundColor[4];
+                        currentColorKey5 = primaryBackgroundColor[5];
+                        currentColorKey6 = primaryBackgroundColor[6];
+                        PM_currentStateNumber = 5;
+                        PM_currentOptionNumber = 0;
+                        PM_currentState = PM_STATES[PM_currentStateNumber];
+                        PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
                     }
                     else {
                         primaryBackgroundColor = PM_currentPrimaryBackgroundColorOption;
@@ -1277,7 +1722,19 @@ export function pauseMenuKeys() {
                         randomizeColor("secondaryBackgroundColor");
                     }
                     else if (PM_currentSecondaryBackgroundColorOption === "Create") {
-                        console.log("Not created yet");
+                        colorCreationOption = "Secondary";
+                        colorCreationCurrentColor = "#000000";
+                        resetColorKeyOptions();
+                        currentColorKey1 = secondaryBackgroundColor[1];
+                        currentColorKey2 = secondaryBackgroundColor[2];
+                        currentColorKey3 = secondaryBackgroundColor[3];
+                        currentColorKey4 = secondaryBackgroundColor[4];
+                        currentColorKey5 = secondaryBackgroundColor[5];
+                        currentColorKey6 = secondaryBackgroundColor[6];
+                        PM_currentStateNumber = 5;
+                        PM_currentOptionNumber = 0;
+                        PM_currentState = PM_STATES[PM_currentStateNumber];
+                        PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
                     }
                     else {
                         secondaryBackgroundColor = PM_currentSecondaryBackgroundColorOption;
@@ -1288,7 +1745,19 @@ export function pauseMenuKeys() {
                         randomizeColor("buttonColor");
                     }
                     else if (PM_currentButtonColorOption === "Create") {
-                        console.log("Not created yet");
+                        colorCreationOption = "Button";
+                        colorCreationCurrentColor = "#000000";
+                        resetColorKeyOptions();
+                        currentColorKey1 = buttonColor[1];
+                        currentColorKey2 = buttonColor[2];
+                        currentColorKey3 = buttonColor[3];
+                        currentColorKey4 = buttonColor[4];
+                        currentColorKey5 = buttonColor[5];
+                        currentColorKey6 = buttonColor[6];
+                        PM_currentStateNumber = 5;
+                        PM_currentOptionNumber = 0;
+                        PM_currentState = PM_STATES[PM_currentStateNumber];
+                        PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
                     }
                     else {
                         buttonColor = PM_currentButtonColorOption;
@@ -1299,7 +1768,19 @@ export function pauseMenuKeys() {
                         randomizeColor("highlightedButtonColor");
                     }
                     else if (PM_currentHighlightedButtonColorOption === "Create") {
-                        console.log("Not created yet");
+                        colorCreationOption = "HighlightButton";
+                        colorCreationCurrentColor = "#000000";
+                        resetColorKeyOptions();
+                        currentColorKey1 = highlightedButtonColor[1];
+                        currentColorKey2 = highlightedButtonColor[2];
+                        currentColorKey3 = highlightedButtonColor[3];
+                        currentColorKey4 = highlightedButtonColor[4];
+                        currentColorKey5 = highlightedButtonColor[5];
+                        currentColorKey6 = highlightedButtonColor[6];
+                        PM_currentStateNumber = 5;
+                        PM_currentOptionNumber = 0;
+                        PM_currentState = PM_STATES[PM_currentStateNumber];
+                        PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
                     }
                     else {
                         highlightedButtonColor = PM_currentHighlightedButtonColorOption;
@@ -1310,7 +1791,19 @@ export function pauseMenuKeys() {
                         randomizeColor("borderColor");
                     }
                     else if (PM_currentBorderColorOption === "Create") {
-                        console.log("Not created yet");
+                        colorCreationOption = "Border";
+                        colorCreationCurrentColor = "#000000";
+                        resetColorKeyOptions();
+                        currentColorKey1 = borderColor[1];
+                        currentColorKey2 = borderColor[2];
+                        currentColorKey3 = borderColor[3];
+                        currentColorKey4 = borderColor[4];
+                        currentColorKey5 = borderColor[5];
+                        currentColorKey6 = borderColor[6];
+                        PM_currentStateNumber = 5;
+                        PM_currentOptionNumber = 0;
+                        PM_currentState = PM_STATES[PM_currentStateNumber];
+                        PM_currentOption = PM_OPTIONS.ColorCreationMenu[PM_currentOptionNumber];
                     }
                     else {
                         borderColor = PM_currentBorderColorOption;
@@ -1335,6 +1828,11 @@ export function pauseMenuKeys() {
                     PM_currentOption = PM_OPTIONS.ScreenOptionsMenu[PM_currentOptionNumber];
                 }
             }
+            else if (PM_currentState === PM_STATES[5]) {
+                if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[6]) {
+                    realTimeColorBoxChange();
+                }
+            }
             else if (PM_currentState === PM_STATES[7]) {
                 if (PM_currentOption === PM_OPTIONS.ScreenOptionsMenu[0]) {
                     currentScreenX = PM_currentScreenXOption;
@@ -1347,10 +1845,14 @@ export function pauseMenuKeys() {
                 else if (PM_currentOption === PM_OPTIONS.ScreenOptionsMenu[2]) {
                     currentScreenWidth = PM_currentScreenWidthOption;
                     canvas.width = currentScreenWidth;
+                    world.playableCharacter.cameraBoundaryWidth = canvas.width / 2;
+                    world.playableCharacter.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
                 }
                 else if (PM_currentOption === PM_OPTIONS.ScreenOptionsMenu[3]) {
                     currentScreenHeight = PM_currentScreenHeightOption;
                     canvas.height = currentScreenHeight;
+                    world.playableCharacter.cameraBoundaryHeight = canvas.height / 2;
+                    world.playableCharacter.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
                 }
             }
         }
@@ -1404,6 +1906,9 @@ export function pauseMenuKeys() {
             }
             else if (PM_currentState === PM_STATES[4]) {
                 resetPauseMenuStates();
+            }
+            else if (PM_currentState === PM_STATES[5]) {
+                resetChangeBackgroundColorMenu();
             }
             else if (PM_currentState === PM_STATES[6]) {
                 resetOtherOptionsMenuStates();
@@ -1780,6 +2285,207 @@ export function runPauseMenuScreen() {
 
                 // The Change BackgroundColor Menu Containers
                 viewCreditsMenuRects.title();
+                //
+                break;
+            case PM_STATES[5]:
+                const colorCreationMenuRects = {
+                    title: function() {
+                        // Borders
+                        ctx.fillStyle = borderColor;
+                        ctx.fillRect(pauseMenuContainerX - 4, pauseMenuContainerY - 8, canvas.width - 32 + 8, 32 + 8);
+                        //
+                        // The Structure
+                        ctx.fillStyle = secondaryBackgroundColor;
+                        ctx.fillRect(pauseMenuContainerX, pauseMenuContainerY - 4, canvas.width - 32, 32);
+                        //
+                        // Text
+                        ctx.fillStyle = "white";
+                        ctx.font = "bold 30px courier new, monospace";
+                        ctx.fillText(colorCreationOption, (canvas.width / 2) - (ctx.measureText(colorCreationOption).width / 2), (pauseMenuContainerY - 4) + 24);
+                        //
+                    },
+                    option1: function() {
+                        // Borders
+                        ctx.fillStyle = borderColor;
+                        ctx.fillRect((pauseMenuContainerX - 4) + 4, (pauseMenuContainerY - 8) + 50, (canvas.width / 2) - 32 + 8 - 8, 24 + 8);
+                        //
+                        // The Structure
+                        if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[0]) {
+                            ctx.fillStyle = highlightedButtonColor;
+                        }
+                        else {
+                            ctx.fillStyle = buttonColor;
+                        }
+                        ctx.fillRect((pauseMenuContainerX) + 4, (pauseMenuContainerY - 4) + 50, (canvas.width / 2) - 32 - 8, 24);
+                        //
+                        // Text
+                        ctx.fillStyle = "white";
+                        ctx.font = "24px courier new, monospace";
+                        ctx.fillText(`${PM_OPTIONS.ColorCreationMenu[0]} ${PM_currentColorKey1Option}`, (canvas.width / 4) - (ctx.measureText(`${PM_OPTIONS.ColorCreationMenu[0]} ${PM_currentColorKey1Option}`).width / 2), (pauseMenuContainerY - 4) + 20 + 50);
+                        //
+                    },
+                    option2: function() {
+                        // Borders
+                        ctx.fillStyle = borderColor;
+                        ctx.fillRect((pauseMenuContainerX - 4) + 4, (pauseMenuContainerY - 8) + 85, (canvas.width / 2) - 32 + 8 - 8, 24 + 8);
+                        //
+                        // The Structure
+                        if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[1]) {
+                            ctx.fillStyle = highlightedButtonColor;
+                        }
+                        else {
+                            ctx.fillStyle = buttonColor;
+                        }
+                        ctx.fillRect((pauseMenuContainerX) + 4, (pauseMenuContainerY - 4) + 85, (canvas.width / 2) - 32 - 8, 24);
+                        //
+                        // Text
+                        ctx.fillStyle = "white";
+                        ctx.font = "24px courier new, monospace";
+                        ctx.fillText(`${PM_OPTIONS.ColorCreationMenu[1]} ${PM_currentColorKey2Option}`, (canvas.width / 4) - (ctx.measureText(`${PM_OPTIONS.ColorCreationMenu[1]} ${PM_currentColorKey2Option}`).width / 2), (pauseMenuContainerY - 4) + 20 + 85);
+                        //
+                    },
+                    option3: function() {
+                        // Borders
+                        ctx.fillStyle = borderColor;
+                        ctx.fillRect((pauseMenuContainerX - 4) + 4, (pauseMenuContainerY - 8) + 120, (canvas.width / 2) - 32 + 8 - 8, 24 + 8);
+                        //
+                        // The Structure
+                        if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[2]) {
+                            ctx.fillStyle = highlightedButtonColor;
+                        }
+                        else {
+                            ctx.fillStyle = buttonColor;
+                        }
+                        ctx.fillRect((pauseMenuContainerX) + 4, (pauseMenuContainerY - 4) + 120, (canvas.width / 2) - 32 - 8, 24);
+                        //
+                        // Text
+                        ctx.fillStyle = "white";
+                        ctx.font = "24px courier new, monospace";
+                        ctx.fillText(`${PM_OPTIONS.ColorCreationMenu[2]} ${PM_currentColorKey3Option}`, (canvas.width / 4) - (ctx.measureText(`${PM_OPTIONS.ColorCreationMenu[2]} ${PM_currentColorKey3Option}`).width / 2), (pauseMenuContainerY - 4) + 20 + 120);
+                        //
+                    },
+                    option4: function() {
+                        // Borders
+                        ctx.fillStyle = borderColor;
+                        ctx.fillRect((pauseMenuContainerX - 4) + 4, (pauseMenuContainerY - 8) + 155, (canvas.width / 2) - 32 + 8 - 8, 24 + 8);
+                        //
+                        // The Structure
+                        if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[3]) {
+                            ctx.fillStyle = highlightedButtonColor;
+                        }
+                        else {
+                            ctx.fillStyle = buttonColor;
+                        }
+                        ctx.fillRect((pauseMenuContainerX) + 4, (pauseMenuContainerY - 4) + 155, (canvas.width / 2) - 32 - 8, 24);
+                        //
+                        // Text
+                        ctx.fillStyle = "white";
+                        ctx.font = "24px courier new, monospace";
+                        ctx.fillText(`${PM_OPTIONS.ColorCreationMenu[3]} ${PM_currentColorKey4Option}`, (canvas.width / 4) - (ctx.measureText(`${PM_OPTIONS.ColorCreationMenu[3]} ${PM_currentColorKey4Option}`).width / 2), (pauseMenuContainerY - 4) + 20 + 155);
+                        //
+                    },
+                    option5: function() {
+                        // Borders
+                        ctx.fillStyle = borderColor;
+                        ctx.fillRect((pauseMenuContainerX - 4) + 4, (pauseMenuContainerY - 8) + 190, (canvas.width / 2) - 32 + 8 - 8, 24 + 8);
+                        //
+                        // The Structure
+                        if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[4]) {
+                            ctx.fillStyle = highlightedButtonColor;
+                        }
+                        else {
+                            ctx.fillStyle = buttonColor;
+                        }
+                        ctx.fillRect((pauseMenuContainerX) + 4, (pauseMenuContainerY - 4) + 190, (canvas.width / 2) - 32 - 8, 24);
+                        //
+                        // Text
+                        ctx.fillStyle = "white";
+                        ctx.font = "24px courier new, monospace";
+                        ctx.fillText(`${PM_OPTIONS.ColorCreationMenu[4]} ${PM_currentColorKey5Option}`, (canvas.width / 4) - (ctx.measureText(`${PM_OPTIONS.ColorCreationMenu[4]} ${PM_currentColorKey5Option}`).width / 2), (pauseMenuContainerY - 4) + 20 + 190);
+                        //
+                    },
+                    option6: function() {
+                        // Borders
+                        ctx.fillStyle = borderColor;
+                        ctx.fillRect((pauseMenuContainerX - 4) + 4, (pauseMenuContainerY - 8) + 225, (canvas.width / 2) - 32 + 8 - 8, 24 + 8);
+                        //
+                        // The Structure
+                        if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[5]) {
+                            ctx.fillStyle = highlightedButtonColor;
+                        }
+                        else {
+                            ctx.fillStyle = buttonColor;
+                        }
+                        ctx.fillRect((pauseMenuContainerX) + 4, (pauseMenuContainerY - 4) + 225, (canvas.width / 2) - 32 - 8, 24);
+                        //
+                        // Text
+                        ctx.fillStyle = "white";
+                        ctx.font = "24px courier new, monospace";
+                        ctx.fillText(`${PM_OPTIONS.ColorCreationMenu[5]} ${PM_currentColorKey6Option}`, (canvas.width / 4) - (ctx.measureText(`${PM_OPTIONS.ColorCreationMenu[5]} ${PM_currentColorKey6Option}`).width / 2), (pauseMenuContainerY - 4) + 20 + 225);
+                        //
+                    },
+                    container: function() {
+                        // Borders
+                        ctx.fillStyle = borderColor;
+                        ctx.fillRect((canvas.width / 2) + (pauseMenuContainerX - 4) + 4, (pauseMenuContainerY - 8) + 50, (canvas.width / 2) - 32 + 8 - 8, 164 + 8);
+                        //
+                        // The Structure
+                        ctx.fillStyle = "white";
+                        ctx.fillRect((canvas.width / 2) + (pauseMenuContainerX) + 4, (pauseMenuContainerY - 4) + 50, (canvas.width / 2) - 32 - 8, 164);
+                        //
+                        // Text
+                        ctx.fillStyle = "black";
+                        ctx.font = "24px courier new, monospace";
+                        ctx.fillText(colorCreationCurrentColor, (canvas.width / 4) - (ctx.measureText(colorCreationCurrentColor).width / 2) + (canvas.width / 2), (pauseMenuContainerY - 4) + 20 + 85);
+                        //
+                    },
+                    colorBox: function() {
+                        // Borders
+                        ctx.fillStyle = borderColor;
+                        ctx.fillRect((canvas.width / 2) + (pauseMenuContainerX - 4) + 4, (pauseMenuContainerY - 12) + 120, (canvas.width / 2) - 32 + 8 - 8, 48 + 16);
+                        //
+                        // The Structure
+                        ctx.fillStyle = colorCreationCurrentColor;
+                        ctx.fillRect((canvas.width / 2) + (pauseMenuContainerX) + 4, (pauseMenuContainerY - 4) + 120, (canvas.width / 2) - 32 - 8, 48);
+                        //
+                    },
+                    submitBox: function() {
+                        // Borders
+                        ctx.fillStyle = borderColor;
+                        ctx.fillRect((canvas.width / 2) + (pauseMenuContainerX - 4) + 4, (pauseMenuContainerY - 8) + 225, (canvas.width / 2) - 32 + 8 - 8, 24 + 8);
+                        //
+                        // The Structure
+                        if (PM_currentOption === PM_OPTIONS.ColorCreationMenu[6]) {
+                            ctx.fillStyle = highlightedButtonColor;
+                        }
+                        else {
+                            ctx.fillStyle = buttonColor;
+                        }
+                        ctx.fillRect((canvas.width / 2) + (pauseMenuContainerX) + 4, (pauseMenuContainerY - 4) + 225, (canvas.width / 2) - 32 - 8, 24);
+                        //
+                        // Text
+                        ctx.fillStyle = "white";
+                        ctx.font = "24px courier new, monospace";
+                        ctx.fillText(PM_OPTIONS.ColorCreationMenu[6], (canvas.width / 4) - (ctx.measureText(PM_OPTIONS.ColorCreationMenu[6]).width / 2) + (canvas.width / 2), (pauseMenuContainerY - 4) + 20 + 225);
+                        //
+                    }
+                }
+                // The Change Background Color Menu Background
+                ctx.fillStyle = primaryBackgroundColor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                //
+
+                // The Change BackgroundColor Menu Containers
+                colorCreationMenuRects.title();
+                colorCreationMenuRects.option1();
+                colorCreationMenuRects.option2();
+                colorCreationMenuRects.option3();
+                colorCreationMenuRects.option4();
+                colorCreationMenuRects.option5();
+                colorCreationMenuRects.option6();
+                colorCreationMenuRects.container();
+                colorCreationMenuRects.colorBox();
+                colorCreationMenuRects.submitBox();
                 //
                 break;
             case PM_STATES[6]:

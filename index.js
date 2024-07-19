@@ -7,9 +7,6 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 ctx.imageSmoothingEnabled = false;
 
-console.log(screen.width);
-console.log(screen.height);
-
 export let allowKeys = true;
 
 export const STATES = {
@@ -19,7 +16,7 @@ export const STATES = {
     TitleScreen: 3
 };
 
-window.gameCurrentState = STATES.PauseMenu;
+window.gameCurrentState = STATES.Gameplay;
 
 function resetCanvas() {
     ctx.fillStyle = "black";

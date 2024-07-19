@@ -383,7 +383,25 @@ export function gameplayKeys() {
 }
 
 function loadClasses() {
+    world.background.update();
     world.playableCharacter.update();
+}
+
+function infoBox() {
+    const borderWidth = canvas.width - 64;
+    const borderHeight = 64;
+    const boxWidth = canvas.width - 68;
+    const boxHeight = 60;
+    ctx.globalAlpha = 0.5;
+    // Border
+    ctx.fillStyle = "black";
+    ctx.fillRect((canvas.width / 2) - (borderWidth / 2), canvas.height - (borderHeight + 16), borderWidth, borderHeight);
+    //
+    // The Box
+    ctx.fillStyle = "white";
+    ctx.fillRect((canvas.width / 2) - (boxWidth / 2), canvas.height - (boxHeight + 16) - 2, boxWidth, boxHeight);
+    //
+    ctx.globalAlpha = 1;
 }
 
 function displayHealthAndStamina() {
@@ -403,10 +421,9 @@ function displayHealthAndStamina() {
 export function runGameplayScreen() {
     if (window.gameCurrentState === STATES.Gameplay) {
         gameplayKeysAllowed = true;
-        ctx.fillStyle = "white";
-        ctx.fillRect((canvas.width / 2) - (480 / 2), (canvas.height / 2) - (270 / 2), 480, 270);
         loadClasses();
         displayHealthAndStamina();
+        // infoBox();
     }
 }
 
