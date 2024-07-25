@@ -1032,6 +1032,15 @@ export function pauseMenuKeys() {
                                 world.tilePlacements.forEach(tilePlacement => {
                                     tilePlacement.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
                                 });
+                                world.buildings.forEach(building => {
+                                    building.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                                });
+                                world.lightSources.forEach(lightSource => {
+                                    lightSource.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                                });
+                                world.theLights.forEach(light => {
+                                    light.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                                });
                             }
                             else if (PM_currentOption === PM_OPTIONS.ScreenOptionsMenu[3]) {
                                 currentScreenHeight = PM_currentScreenHeightOption;
@@ -1041,6 +1050,15 @@ export function pauseMenuKeys() {
                                 world.background.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
                                 world.tilePlacements.forEach(tilePlacement => {
                                     tilePlacement.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                                });
+                                world.buildings.forEach(building => {
+                                    building.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                                });
+                                world.lightSources.forEach(lightSource => {
+                                    lightSource.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                                });
+                                world.theLights.forEach(light => {
+                                    light.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
                                 });
                             }
                         }
@@ -1861,6 +1879,15 @@ export function pauseMenuKeys() {
                     world.tilePlacements.forEach(tilePlacement => {
                         tilePlacement.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
                     });
+                    world.buildings.forEach(building => {
+                        building.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                    });
+                    world.lightSources.forEach(lightSource => {
+                        lightSource.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                    });
+                    world.theLights.forEach(light => {
+                        light.pos.x += (currentScreenWidth - 480) - world.playableCharacter.width;
+                    });
                 }
                 else if (PM_currentOption === PM_OPTIONS.ScreenOptionsMenu[3]) {
                     currentScreenHeight = PM_currentScreenHeightOption;
@@ -1870,6 +1897,15 @@ export function pauseMenuKeys() {
                     world.background.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
                     world.tilePlacements.forEach(tilePlacement => {
                         tilePlacement.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                    });
+                    world.buildings.forEach(building => {
+                        building.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                    });
+                    world.lightSources.forEach(lightSource => {
+                        lightSource.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
+                    });
+                    world.theLights.forEach(light => {
+                        light.pos.y += (currentScreenHeight - 270) - world.playableCharacter.height;
                     });
                 }
             }

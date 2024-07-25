@@ -21,6 +21,7 @@ export class TilePlacer {
         this.separationHeight = separationHeight;
 
         this.typeOf = typeOf;
+        this.playerInWater = false;
 
         this.origPos = {
             x: x,
@@ -48,7 +49,7 @@ export class TilePlacer {
         };
         this.image.src = this.imgSrc;
 
-        function drawTilePlacer(functionRows, functionColumns, separationWidth, separationHeight, img, imgW, imgH, x, y, cols, rows, totalFrames, typeOf, srcX, srcY) {
+        function drawTilePlacer(functionRows, functionColumns, separationWidth, separationHeight, img, imgW, imgH, x, y, srcX, srcY) {
             let posX = x;
             let posY = y;
             for (let i = 0; i < functionColumns; i++) {
@@ -73,8 +74,7 @@ export class TilePlacer {
 
         if (this.hasLoaded) {
             drawTilePlacer(this.xInstances, this.yInstances, this.separationWidth, this.separationHeight, 
-                this.image, this.width, this.height, this.pos.x, this.pos.y, this.cols, this.rows, 
-                this.totalFrames, this.typeOf, this.srcX, this.srcY);
+                this.image, this.width, this.height, this.pos.x, this.pos.y, this.srcX, this.srcY);
             // ctx.drawImage(
             //     this.image,
             //     this.srcX,
@@ -101,18 +101,38 @@ export class TilePlacer {
         if (this.typeOf === "Water") {
             function checkPlayerCollision(water) {
                 if (world.playableCharacter.pos.y + world.playableCharacter.height <= water.pos.y + water.fullHeight &&
-                    world.playableCharacter.pos.y + world.playableCharacter.height >= water.pos.y &&
+                    world.playableCharacter.pos.y + world.playableCharacter.height - 16 >= water.pos.y &&
                     world.playableCharacter.pos.x >= water.pos.x &&
                     world.playableCharacter.pos.x + world.playableCharacter.width <= water.pos.x + water.fullWidth
                 ) {
+                    water.playerInWater = true;
+                    world.playableCharacter.inWater = true;
                     world.playableCharacter.height = 16;
                     world.playableCharacter.walkingSpeed = 0.5;
                     world.playableCharacter.runningSpeed = 1;
                 }
                 else {
-                    world.playableCharacter.height = 32;
-                    world.playableCharacter.walkingSpeed = 1;
-                    world.playableCharacter.runningSpeed = 2;
+                    let isTherePlayerInWater = false;
+                    world.tilePlacements.forEach(tilePlacement => {
+                        if (tilePlacement.typeOf === "Water") {
+                            if (tilePlacement.playerInWater) {
+                                isTherePlayerInWater = true;
+                                return;
+                            }
+                        }
+                    });
+
+                    if (isTherePlayerInWater) {
+                        water.playerInWater = false;
+                        return;
+                    }
+                    else {
+                        water.playerInWater = false;
+                        world.playableCharacter.inWater = false;
+                        world.playableCharacter.height = 32;
+                        world.playableCharacter.walkingSpeed = 1;
+                        world.playableCharacter.runningSpeed = 2;
+                    }
                 }
             }
 

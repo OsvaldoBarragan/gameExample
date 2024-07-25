@@ -16,7 +16,7 @@ export const STATES = {
     TitleScreen: 3
 };
 
-window.gameCurrentState = STATES.PauseMenu;
+window.gameCurrentState = STATES.Gameplay;
 
 function resetCanvas() {
     ctx.fillStyle = "black";

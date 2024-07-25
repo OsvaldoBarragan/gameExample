@@ -1,14 +1,16 @@
 "use strict";
 
 import { allowKeys, STATES } from "./../index.js";
-import * as one from "./../Worlds/world1.js";
+import * as startingWorld from "./../Worlds/world2.js";
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-export let world = one;
+export let world = startingWorld;
 
 window.gameplayKeysAllowed = false;
+export let gameTime = 400;
+export let gameLight = 8;
 
 function scaleCanvasSize(num) {
     canvas.style.transform = `translate(-50%, -50%) scale(${num})`;
@@ -403,12 +405,70 @@ export function gameplayKeys() {
     });
 }
 
+function dayAndNightTimer() {
+    let timerId = setInterval(countUp, 1000);
+    function countUp() {
+        // 500 seconds is 8 minutes: 20 seconds
+        if (gameTime === 800) {gameTime = 0; gameLight = 0;}
+
+        console.log(gameTime, gameLight);
+        if (gameTime <= 400) {gameLight += 0.02; gameTime++;}
+        else if (gameTime > 400) {gameLight -= 0.02; gameTime++;}
+    }
+}
+
+export function nightShader(posX, posY, width, height) {
+    ctx.globalAlpha = gameLight / 10;
+    ctx.fillStyle = "#02041d";
+    ctx.fillRect(posX, posY, width, height);
+    ctx.globalAlpha = 1;
+}
+
 function loadClasses() {
-    world.background.update();
-    world.tilePlacements.forEach(tilePlacement => {
-        tilePlacement.update();
-    });
-    world.playableCharacter.update();
+    if (gameLight < 6) {
+        world.background.update();
+        world.tilePlacements.forEach(tilePlacement => {
+            tilePlacement.update();
+        });
+        world.buildings.forEach(building => {
+            building.update();
+        });
+        world.lightSources.forEach(lightSource => {
+            if (!lightSource.inFrontOfPlayer) {
+                lightSource.update();
+            }
+        });
+        world.playableCharacter.update();
+        world.lightSources.forEach(lightSource => {
+            if (lightSource.inFrontOfPlayer) {
+                lightSource.update();
+            }
+        });
+        nightShader(0, 0, canvas.width, canvas.height);
+    }
+    else if (gameLight >= 6) {
+        world.background.update();
+        world.tilePlacements.forEach(tilePlacement => {
+            tilePlacement.update();
+        });
+        world.buildings.forEach(building => {
+            building.update();
+        });
+        world.lightSources.forEach((lightSource, index) => {
+            if (!lightSource.inFrontOfPlayer) {
+                lightSource.update();
+                lightSource.srcX = lightSource.image.width / 2;
+            }
+        });
+        world.playableCharacter.update();
+        world.lightSources.forEach((lightSource, index) => {
+            if (lightSource.inFrontOfPlayer) {
+                lightSource.update();
+                lightSource.srcX = lightSource.image.width / 2;
+            }
+        });
+        nightShader(0, 0, canvas.width, canvas.height);
+    }
 }
 
 function infoBox() {
@@ -447,8 +507,10 @@ export function runGameplayScreen() {
         gameplayKeysAllowed = true;
         loadClasses();
         displayHealthAndStamina();
+        // console.log(gameTime);
         // infoBox();
     }
 }
 
+dayAndNightTimer();
 gameplayKeys();

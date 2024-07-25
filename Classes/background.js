@@ -1,4 +1,4 @@
-import { keyTracker, world } from "../Screens/gameplayScreen.js";
+import { keyTracker, world, gameLight, nightShader } from "../Screens/gameplayScreen.js";
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
